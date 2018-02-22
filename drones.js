@@ -198,30 +198,11 @@ class Drones {
     })
     server.post('/drones/command', (req, res) => {
       // Accepts a json list of {id, commandName, (maybe) degree} objects.
-      // I know this is not particularly elegant, but I don't want to call any
-      // functions on objects recieved from the user, as a matter of principle,
-      // even though json doesn't, and probably never will allow storage of
-      // functions.
-      // So, we have to make our own array, and without calling any methods on
-      // the object they pass in, populate it with the items in their object if
-      // it is an array.
-      const recievedCommands = []
-      for (let index = 0; index < req.body.length; index++) {
-        // If the length property is undefined (likely because they didn't pass
-        // an array), this just won't enter, which is
-        // fine.
-        let recievedCommand
-        try { recievedCommand = req.body[index] } catch (error) {
-          // They didn't pass an array.
-          res.sendStatus(400)
-          return
-        }
-        recievedCommands.push(recievedCommand)
-      }
-      if (recievedCommands.length === 0) { res.sendStatus(400); return }
+      // Ensure that the json sent by the user is an array.
+      if (!Array.isArray(req.body)) { res.sendStatus(400); return }
       // First ensure they are commanding an existing drone, then that the
       // command is valid, and then call the relevant function.
-      recievedCommands.filter(command => this.containsId(command.id)).filter(
+      req.body.filter(command => this.containsId(command.id)).filter(
         command => clientCommands
           .map(clientCommand => clientCommand.commandName)
           .includes(command.commandName)
