@@ -14,6 +14,6 @@ server.listen(config.network.port, () => {
   console.log(`[${requestAddress}] ${req.method} ${req.url}`)
 })
 
-server.use(express.json())
+server.use(express.json()) // Enables express json encoding on the server
 
 module.exports = server
