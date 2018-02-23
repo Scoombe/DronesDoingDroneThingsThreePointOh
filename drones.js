@@ -221,7 +221,6 @@ class Drones {
     })
     server.post('/drones/:id', (req, res) => {
       let id = req.params['id']
-      console.log(this.add)
       this.add(id)
       res.sendStatus(200)
     })
